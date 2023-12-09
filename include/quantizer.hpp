@@ -1,0 +1,78 @@
+#pragma once
+
+#include <Arduino.h>
+#include "lumi_sysex.hpp"
+
+#define QUANT_MAJOR 0b101010110101
+#define QUANT_MINOR 0b010110101101
+#define QUANT_HARMONIC_MINOR 0b100110101101
+#define QUANT_PENTATONIC_NEUTRAL 0b010010100101
+#define QUANT_PENTATONIC_MAJOR 0b001010010101
+#define QUANT_PENTATONIC_MINOR 0b010010101001
+#define QUANT_BLUES 0b010011101001
+#define QUANT_DORIAN 0b011010101101
+#define QUANT_PHRYGIAN 0b010110101011
+#define QUANT_LYDIAN 0b101011010101
+#define QUANT_MIXOLYDIAN 0b011010110101
+#define QUANT_LOCRIAN 0b010101101011
+#define QUANT_WHOLE_TONE 0b010101010101
+#define QUANT_ARABIC_A 0b101101101101
+#define QUANT_ARABIC_B 0b010101110101
+#define QUANT_JAPANESE 0b100011010001
+#define QUANT_RYUKYU 0b100010110001
+#define QUANT_8TONE_SPANISH 0b010101111011
+#define QUANT_CHROMATIC 0b111111111111
+
+namespace Quantizer {
+
+const uint16_t quantized_scales[LUMI_SCALE_COUNT] = {
+  QUANT_MAJOR,
+  QUANT_MINOR,
+  QUANT_HARMONIC_MINOR,
+  QUANT_PENTATONIC_NEUTRAL,
+  QUANT_PENTATONIC_MAJOR,
+  QUANT_PENTATONIC_MINOR,
+  QUANT_BLUES,
+  QUANT_DORIAN,
+  QUANT_PHRYGIAN,
+  QUANT_LYDIAN,
+  QUANT_MIXOLYDIAN,
+  QUANT_LOCRIAN,
+  QUANT_WHOLE_TONE,
+  QUANT_ARABIC_A,
+  QUANT_ARABIC_B,
+  QUANT_JAPANESE,
+  QUANT_RYUKYU,
+  QUANT_8TONE_SPANISH,
+  QUANT_CHROMATIC
+};
+
+class Quantizer {
+public:
+  enum class Mode {
+    NONE = 0,
+    FILTER,
+    ROUND_UP,
+    ROUND_DOWN,
+    __COUNT
+  };
+
+  const char mode_name[(uint8_t)Mode::__COUNT][7] = {
+    "Off",
+    "Filter",
+    "Up",
+    "Down"
+  };
+
+  byte quantize_note(byte midi_note);
+  Mode get_mode();
+  void set_mode(Mode mode);
+
+private:
+  Mode current_mode = Mode::NONE;
+
+};
+
+extern Quantizer quantizer;
+
+} // namespace Quantizer
