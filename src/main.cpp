@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include <TeensyThreads.h>
+#include "settings.hpp"
 #include "display.hpp"
 #include "usb_device.hpp"
 #include "usb_host.hpp"
@@ -14,6 +15,7 @@ void setup() {
   pinMode(9, INPUT_PULLUP);
 
   Serial.begin(115200);
+  Settings::begin();
   LED::begin();
   LMUSBDevice::begin();
   LMUSBHost::begin();
@@ -21,6 +23,7 @@ void setup() {
 }
 
 void loop() {
+  Settings::tick();
   LED::tick();
   LMUSBDevice::tick();
   LMUSBHost::tick();

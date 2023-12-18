@@ -5,8 +5,8 @@
 #include <TeensyThreads.h>
 #include <USBHost_t36.h>
 
-#define RESERVE_CHANNEL_1 1
-#define RESERVE_CHANNEL_16 1
+#define RESERVE_CHANNEL_1 0
+#define RESERVE_CHANNEL_16 0
 
 #define MIDI_HOST_DEVICE_POOL 2
 

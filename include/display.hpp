@@ -25,13 +25,15 @@ public:
     KEY = 0,
     SCALE,
     QUANTIZER_MODE,
+    MPE_MODE,
     __COUNT
   };
 
   const char ks_option_names[(uint8_t)KSOption::__COUNT][10] = {
     "Key",
     "Scale",
-    "Quantizer"
+    "Quantizer",
+    "MPE"
   };
 
 private:

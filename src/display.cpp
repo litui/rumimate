@@ -121,6 +121,29 @@ void Driver::tick() {
           }
 
           name = (char *)Quantizer::quantizer.mode_name[item_index];
+        } else if (KSOption(i) == KSOption::MPE_MODE) {
+          item_index = (uint8_t)LumiSysex::get_current_mpe_mode();
+          item_count = LUMI_MPE_MODES;
+
+          if (selected && !current_entered) {
+            if (enc_button_state) {
+              current_entered = enc_button_state;
+              LMEncoder::reset_encoder_pos(item_index);
+            }
+          } else if (selected && current_entered) {
+            item_index = LMEncoder::read_bounded_encoder_pos(0, item_count - 1);
+            MIDIDevice *lumi = LMUSBHost::get_lumi_dev();
+            if (lumi != NULL) {
+              LumiSysex::set_mpe_mode(*lumi, LumiSysex::MPEMode(item_index));
+            }
+
+            if (enc_button_state) {
+              current_entered = false;
+              LMEncoder::reset_encoder_pos(menu_select);
+            }
+          }
+
+          name = (char *)LumiSysex::mpe_mode_name[item_index];
         }
 
         sh1107.printf("%c %s: %s\n", sel_char, ks_option_names[i], name);

@@ -3,6 +3,7 @@
 #include "led.hpp"
 #include "lumi_sysex.hpp"
 #include "quantizer.hpp"
+#include "settings.hpp"
 
 namespace LMUSBHost {
 using namespace LumiSysex;
@@ -383,8 +384,13 @@ void tick() {
             Serial.println("Fetching Configuration.");
             send_read_configuration(*lumi_dev);
 
+            set_mpe_mode(*lumi_dev, get_current_mpe_mode());
             set_key(*lumi_dev, get_current_key());
             set_scale(*lumi_dev, get_current_scale());
+            Quantizer::quantizer.set_mode(Quantizer::quantizer.get_mode());
+
+            set_global_color(*lumi_dev, Settings::last_values.global_r, Settings::last_values.global_g, Settings::last_values.global_b);
+            set_root_color(*lumi_dev, Settings::last_values.root_r, Settings::last_values.root_g, Settings::last_values.root_b);
 
             lumi_dev->send_now();
           } else if (is_ewi(usb_midi_dev[i])) {

@@ -67,10 +67,6 @@ public:
   byte quantize_note(byte midi_note);
   Mode get_mode();
   void set_mode(Mode mode);
-
-private:
-  Mode current_mode = Mode::NONE;
-
 };
 
 extern Quantizer quantizer;

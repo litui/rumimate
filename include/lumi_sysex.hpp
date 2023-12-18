@@ -12,9 +12,16 @@
 #define LUMI_CONFIG_KEY_PREFIX 0x30
 #define LUMI_SCALE_COUNT 19
 #define LUMI_CONFIG_SCALE_PREFIX 0x60
+#define LUMI_CONFIG_MPE_NUM_CHANNEL_PREFIX 0x10
+#define LUMI_CONFIG_MIDI_MODE_PREFIX 0x20
+#define LUMI_CONFIG_UPPER_LOWER_PREFIX 0x00
 
 #define LUMI_CONFIG_ROOT_COLOR_PREFIX 0x30
 #define LUMI_CONFIG_GLOBAL_COLOR_PREFIX 0x20
+
+#define LUMI_MPE_MODES 3
+#define MPE_RPN_MSB 0
+#define MPE_RPN_LSB 6
 
 namespace LumiSysex {
 
@@ -87,12 +94,50 @@ const uint8_t scale_commands[LUMI_SCALE_COUNT][2] = {
     {0x42, 0x02}, {0x62, 0x02}, {0x02, 0x03}, {0x22, 0x03}, {0x42, 0x03},
     {0x62, 0x03}, {0x02, 0x04}, {0x22, 0x04}, {0x42, 0x04}};
 
+enum class MIDIMode { MPE, MULTI, SINGLE };
+
+const uint8_t midi_mode_commands[] = {
+  0x20, // MPE
+  0x00, // Multi
+  0x40  // Single
+};
+
+enum class MPEMode { OFF, LOWER, UPPER };
+
+const char mpe_mode_name[LUMI_MPE_MODES][8] = {"Off", "Lower", "Upper"};
+
+const uint8_t mpe_mode_commands[LUMI_MPE_MODES] = {
+  NULL,
+  0x05,
+  0x25
+};
+
+const uint8_t mpe_num_channel_commands[15][2] = {
+  {21, 00}, // 1
+  {41, 00},
+  {61, 00},
+  {01, 01},
+  {21, 01},
+  {41, 01},
+  {61, 01},
+  {01, 02},
+  {21, 02},
+  {41, 02},
+  {61, 02},
+  {01, 03},
+  {21, 03},
+  {41, 03},
+  {61, 03}  // 15
+};
+
 uint8_t get_current_key();
 uint8_t get_current_scale();
+MPEMode get_current_mpe_mode();
 void set_key(MIDIDevice &midi_dev, uint8_t key_index);
 void set_scale(MIDIDevice &midi_dev, uint8_t scale_index);
 void set_root_color(MIDIDevice &midi_dev, uint8_t r, uint8_t g, uint8_t b);
 void set_global_color(MIDIDevice &midi_dev, uint8_t r, uint8_t g, uint8_t b);
+void set_mpe_mode(MIDIDevice &midi_dev, MPEMode mode);
 
 void send_enumerate(MIDIDevice &midi_dev);
 void send_read_configuration(MIDIDevice &midi_dev);

@@ -1,11 +1,12 @@
 #include "quantizer.hpp"
+#include "settings.hpp"
 
 namespace Quantizer {
 
 Quantizer quantizer;
 
 byte Quantizer::quantize_note(byte midi_note) {
-  if (current_mode == Mode::NONE) {
+  if (Settings::last_values.quantizer_mode == Mode::NONE) {
     Serial.println("Quantizer note passed through (quantizer off).");
     return midi_note;
   }
@@ -40,7 +41,7 @@ byte Quantizer::quantize_note(byte midi_note) {
     return midi_note;
 
   } else {
-    if (current_mode == Mode::ROUND_UP) {
+    if (Settings::last_values.quantizer_mode == Mode::ROUND_UP) {
       uint8_t filter_offset = 1;
 
       while (!bitRead(quantized_scales[scale],
@@ -53,7 +54,7 @@ byte Quantizer::quantize_note(byte midi_note) {
         Serial.println(midi_note + filter_offset, DEC);
         return midi_note + filter_offset;
       }
-    } else if (current_mode == Mode::ROUND_DOWN) {
+    } else if (Settings::last_values.quantizer_mode == Mode::ROUND_DOWN) {
       uint8_t filter_offset = 1;
       uint8_t reshifted_note = shifted_note - filter_offset < 0 ? 12 + shifted_note - filter_offset : shifted_note - filter_offset;
 
@@ -80,11 +81,14 @@ byte Quantizer::quantize_note(byte midi_note) {
 }
 
 Quantizer::Mode Quantizer::get_mode() {
-  return current_mode;
+  return Settings::last_values.quantizer_mode;
 }
 
 void Quantizer::set_mode(Mode mode) {
-  current_mode = mode;
+  if (Settings::last_values.quantizer_mode != mode) {
+    Settings::last_values.quantizer_mode = mode;
+    Settings::save_settings(Settings::last_values);
+  }
 }
 
 } // namespace Quantizer
